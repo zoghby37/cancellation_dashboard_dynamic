@@ -105,6 +105,14 @@ if uploaded_files:
             df_temp = pd.read_csv(uploaded_file)
             all_data.append(df_temp)
             file_names.append(uploaded_file.name)
+        except UnicodeDecodeError:
+            try:
+                uploaded_file.seek(0)  # Reset file pointer to beginning
+                df_temp = pd.read_csv(uploaded_file, encoding='cp1256')
+                all_data.append(df_temp)
+                file_names.append(uploaded_file.name)
+            except Exception as e:
+                st.error(f"Error reading {uploaded_file.name}: {e}")
         except Exception as e:
             st.error(f"Error reading {uploaded_file.name}: {e}")
     
