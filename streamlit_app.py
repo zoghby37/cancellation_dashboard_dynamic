@@ -92,11 +92,23 @@ st.title("📊 Cancellation Report Dashboard")
 
 # Process uploaded files
 if uploaded_files:
+    # Combine all uploaded files
     all_data = []
+    file_names = []
+    
     for uploaded_file in uploaded_files:
         try:
             df_temp = pd.read_csv(uploaded_file)
             all_data.append(df_temp)
+            file_names.append(uploaded_file.name)
+        except UnicodeDecodeError:
+            try:
+                uploaded_file.seek(0)  # Reset file pointer to beginning
+                df_temp = pd.read_csv(uploaded_file, encoding='cp1256')
+                all_data.append(df_temp)
+                file_names.append(uploaded_file.name)
+            except Exception as e:
+                st.error(f"Error reading {uploaded_file.name}: {e}")
         except Exception as e:
             st.error(f"Error reading {uploaded_file.name}: {e}")
     
@@ -244,51 +256,35 @@ if uploaded_files:
             st.plotly_chart(fig_staff, use_container_width=True)
         
         with col2:
-            # Stacked bar chart - cleaner than grouped
+            # Stacked bar chart - cleaner view
             staff_reason_data = filtered_df.groupby(['Order Entered By', 'Modify Reason']).size().reset_index(name='Count')
             
             # Get top 5 reasons
             top_reasons = filtered_df['Modify Reason'].value_counts().head(5).index.tolist()
             staff_reason_filtered = staff_reason_data[staff_reason_data['Modify Reason'].isin(top_reasons)]
             
-            # Shorten reason names for better display
-            reason_short_names = {
-                "Change as desired by the customer before processing": "Customer Change (Before)",
-                "Wrong transaction by waiter before processing": "Waiter Error (Before)",
-                "Change as desired by the customer after preparation": "Customer Change (After)",
-                "Customer does not like the item": "Customer Dislike",
-                "Item not available": "Item Unavailable",
-                "Damage due external factors": "External Damage",
-                "Wrong order by customer": "Wrong Order",
-                "Wrong table order": "Wrong Table",
-                "Wrong transaction by waiter after processing": "Waiter Error (After)",
-                "Customer need to cancel as per his request": "Customer Request",
-                "Item not meet quality pecifications": "Quality Issue",
-                "Attempt request": "Attempt Request"
-            }
-            staff_reason_filtered['Reason_Short'] = staff_reason_filtered['Modify Reason'].map(reason_short_names).fillna(staff_reason_filtered['Modify Reason'])
-            
             fig_stacked = px.bar(
                 staff_reason_filtered,
-                x='Order Entered By',
-                y='Count',
-                color='Reason_Short',
+                x='Count',
+                y='Order Entered By',
+                color='Modify Reason',
                 title='Staff Cancellations by Reason (Top 5)',
-                barmode='stack'
+                barmode='stack',
+                orientation='h'
             )
             fig_stacked.update_layout(
-                height=400,
-                xaxis_tickangle=-45,
+                height=450,
+                yaxis={'categoryorder': 'total ascending'},
                 legend=dict(
                     title="Reason",
                     orientation="h",
                     yanchor="bottom",
-                    y=-0.55,
+                    y=-0.45,
                     xanchor="center",
                     x=0.5,
-                    font=dict(size=10)
+                    font=dict(size=9)
                 ),
-                margin=dict(b=120)
+                margin=dict(b=100)
             )
             st.plotly_chart(fig_stacked, use_container_width=True)
         
