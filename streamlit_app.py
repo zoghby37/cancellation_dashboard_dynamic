@@ -260,7 +260,7 @@ if uploaded_files:
             staff_reason_data = filtered_df.groupby(['Order Entered By', 'Modify Reason']).size().reset_index(name='Count')
             
             # Get top 5 reasons
-            top_reasons = filtered_df['Modify Reason'].value_counts().head(5).index.tolist()
+            top_reasons = filtered_df['Modify Reason'].value_counts().index.tolist()
             staff_reason_filtered = staff_reason_data[staff_reason_data['Modify Reason'].isin(top_reasons)]
             
             fig_stacked = px.bar(
@@ -268,7 +268,7 @@ if uploaded_files:
                 x='Count',
                 y='Order Entered By',
                 color='Modify Reason',
-                title='Staff Cancellations by Reason (Top 5)',
+                title='Staff Cancellations by Reason',
                 barmode='stack',
                 orientation='h'
             )
