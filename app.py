@@ -122,13 +122,7 @@ st.markdown("""
 def main():
     # Header with Logo
     col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        # Check if logo exists in the same directory
-        import os
-        logo_path = os.path.join(os.path.dirname(__file__), 'tesh_logo.png')
-        if os.path.exists(logo_path):
-            st.image(logo_path, width=90)
-        
+    with col2:        
         st.markdown('<div class="main-header">Tesh Lounge - Sales Analysis</div>', unsafe_allow_html=True)
         st.markdown('<div class="sub-header">Business day starts at 6:00 AM | 24-Hour Operation</div>', unsafe_allow_html=True)
     
