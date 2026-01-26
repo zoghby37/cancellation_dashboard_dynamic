@@ -27,7 +27,6 @@ TESH_GOLD = '#C9A227'
 # Page configuration
 st.set_page_config(
     page_title="Tesh Lounge - Sales Analysis",
-    page_icon="🪶",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -128,7 +127,7 @@ def main():
         import os
         logo_path = os.path.join(os.path.dirname(__file__), 'tesh_logo.png')
         if os.path.exists(logo_path):
-            st.image(logo_path, width=120)
+            st.image(logo_path, width=90)
         
         st.markdown('<div class="main-header">Tesh Lounge - Sales Analysis</div>', unsafe_allow_html=True)
         st.markdown('<div class="sub-header">Business day starts at 6:00 AM | 24-Hour Operation</div>', unsafe_allow_html=True)
@@ -649,25 +648,25 @@ def main():
                 st.markdown("---")
                 
                 # Staff Hourly Performance
-                if 'Business Hour' in paid_orders.columns and paid_orders['Business Hour'].notna().any():
-                    st.markdown("**⏰ Staff Activity by Hour (Business Day)**")
+                # if 'Business Hour' in paid_orders.columns and paid_orders['Business Hour'].notna().any():
+                #     st.markdown("**⏰ Staff Activity by Hour (Business Day)**")
                     
-                    top_5_staff = staff_stats.head(5)['Staff'].tolist()
-                    top_staff_orders = paid_orders[paid_orders['Order Taken By'].isin(top_5_staff)]
+                #     top_5_staff = staff_stats.head(5)['Staff'].tolist()
+                #     top_staff_orders = paid_orders[paid_orders['Order Taken By'].isin(top_5_staff)]
                     
-                    staff_hourly = top_staff_orders.groupby(['Business Hour', 'Order Taken By']).size().reset_index(name='Orders')
-                    staff_hourly['Hour Label'] = staff_hourly['Business Hour'].apply(get_business_hour_label)
+                #     staff_hourly = top_staff_orders.groupby(['Business Hour', 'Order Taken By']).size().reset_index(name='Orders')
+                #     staff_hourly['Hour Label'] = staff_hourly['Business Hour'].apply(get_business_hour_label)
                     
-                    fig_heatmap = px.density_heatmap(
-                        staff_hourly,
-                        x='Hour Label',
-                        y='Order Taken By',
-                        z='Orders',
-                        title="Staff Activity Heatmap (Top 5 Staff by Revenue)",
-                        color_continuous_scale='YlOrRd'
-                    )
-                    fig_heatmap.update_layout(xaxis_tickangle=-45)
-                    st.plotly_chart(fig_heatmap, use_container_width=True)
+                #     fig_heatmap = px.density_heatmap(
+                #         staff_hourly,
+                #         x='Hour Label',
+                #         y='Order Taken By',
+                #         z='Orders',
+                #         title="Staff Activity Heatmap (Top 5 Staff by Revenue)",
+                #         color_continuous_scale='YlOrRd'
+                #     )
+                #     fig_heatmap.update_layout(xaxis_tickangle=-45)
+                #     st.plotly_chart(fig_heatmap, use_container_width=True)
                 
                 # Additional Staff Insights
                 st.markdown("---")
